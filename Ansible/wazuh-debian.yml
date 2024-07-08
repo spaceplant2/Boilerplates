@@ -1,0 +1,138 @@
+###
+#  Playbook for ansible to deploy wazuh-agent and osquery on all machines running debian. This will require a hosts file that can handle groupings.
+#    Note that there are a few checks to ensure that client configs do not overwrite server configs. Make sure that the appropriate changes have
+#    been made before running!
+#  Tested on raspberry pi os, ubuntu20.04 and up, and debian 11
+
+- hosts: debian
+  become: true
+  vars_files:
+  - /etc/ansible/become.pwd
+  environment:
+    WAZUH_MANAGER: "wazuh.domain.mine"
+
+  tasks:
+    - name: install dependencies
+      apt:
+        pkg:
+          - curl
+          - gnupg
+          - debian-archive-keyring
+          - apt-transport-https
+        state: present
+        install_recommends: yes
+        update_cache: yes
+
+    - name: Install, ripped straight from wazuh install script
+      when: inventory_hostname != "wazuh" and inventory_hostname not in groups.dockers
+      block:
+        - name: add wazuh repo
+          shell:
+            cmd: curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import
+        - name: then fix permissions
+          ansible.builtin.file:
+              path: /usr/share/keyrings/wazuh.gpg
+              mode: '644'
+        - name: add apt source
+          ansible.builtin.apt_repository:
+            install_python_apt: true
+            repo: "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main"
+            state: present
+            update_cache: true
+        - name: install wazuh agent
+          apt:
+            name: wazuh-agent
+            state: present
+            update_cache: yes
+            install_recommends: yes
+        - name: copy wazuh config file
+          when: ansible_hostname != "wazuh" and inventory_hostname != "wazhu.domain.mine"
+          ansible.builtin.copy:
+            src: /media/unified/setup/var/ossec/etc/ossec.conf
+            dest: /var/ossec/etc/ossec.conf
+        - name: start service
+          ansible.builtin.systemd:
+            name: wazuh-agent
+            daemon_reload: true
+            state: started
+            enabled: true
+###   And repeat for osquery repo
+    - name: add key for osquery repo
+      block:
+        - name: osquery- add apt key
+          ansible.builtin.copy:
+            src: /media/unified/setup/etc/apt/keyrings/osquery.gpg
+            dest: /etc/apt/keyrings/osquery.gpg
+        - name: osquery- add apt source
+          ansible.builtin.apt_repository:
+            repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/osquery.gpg] https://pkg.osquery.io/deb deb main"
+            state: present
+        - name: osquery install
+          apt:
+            name: osquery
+            state: present
+            update_cache: true
+        - name: copy osquery config file
+          ansible.builtin.copy:
+            src: /media/unified/setup/etc/osquery/osquery.conf
+            dest: /etc/osquery/osquery.conf
+        - name: start service
+          ansible.builtin.systemd:
+            name: osqueryd
+            daemon_reload: true
+            state: started
+            enabled: true 
+###   osquery end
+
+    - name: Install, modified for docker container monitoring
+      when: ansible_hostname != "wazuh" and inventory_hostname != "wazhu-server.domain.mine" and inventory_hostname in groups.dockers
+      block:
+        - name: additional dependencies
+          apt:
+            pkg:
+              - python3
+              - python3-pip
+            state: present
+            install_recommends: yes
+            update_cache: yes
+        - name: install pip dependencies
+          vars:
+            pipDeps:
+              - install docker==4.2.0
+              - urllib3==1.26.18
+          ansible.builtin.pip:
+            name: '{{ pipDeps }}'
+            state: present
+        - name: add wazuh repo
+          shell:
+            cmd: curl -s https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/wazuh.gpg --import
+        - name: then fix permissions
+          ansible.builtin.file:
+              path: /usr/share/keyrings/wazuh.gpg
+              mode: '644'
+        - name: add apt source
+          ansible.builtin.apt_repository:
+            install_python_apt: true
+            repo: "deb [signed-by=/usr/share/keyrings/wazuh.gpg] https://packages.wazuh.com/4.x/apt/ stable main"
+            state: present
+            update_cache: true
+        - name: install wazuh agent
+          apt:
+            name: wazuh-agent
+            state: present
+            update_cache: yes
+            install_recommends: yes
+###  make sure the client config isn't accidentally place on the server :-O
+        - name: copy wazuh config file
+          when: ansible_hostname != "wazuh-server" and inventory_hostname != "wazhu-server.domain.mine"
+          ansible.builtin.copy:
+            src: /media/unified/setup/var/ossec/etc/ossec-docker.conf
+            dest: /var/ossec/etc/ossec.conf
+        - name: start service
+          ansible.builtin.systemd:
+            name: wazuh-agent
+            daemon_reload: true
+            state: started
+            enabled: true
+
+
