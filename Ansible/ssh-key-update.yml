@@ -1,0 +1,44 @@
+#   Some quick basics: Keys function like passwords in that *in this use case*
+# they are used for login services, and the longer they are, the harder they are to
+# decode. Also like passwords, it is a good idea to change them every once 
+# in a while. Also like passwords, when you change them, you'll need a way 
+# to keep track of them without making them public knowledge.
+# 
+#   This playbook will disburse the desired public keys to all targets, 
+# and also is able to remove discontinued keys. You can verify which key(s)
+# is (are) passed for login attempts with `ssh <host> -v` then scrolling 
+# through the output till you find 'Will attempt key' or something close. 
+# The key that is actually used will be shown by the statement 'Server accepts key:'
+#
+#   Create your new key with `ssh-keygen` and copy the public key to your
+# preferred ansible storage location. My preferred strategy is to have two
+# keys, and remove the older of them when a new one is deployed. The ignore_errors
+# statement prevents stopping the play if a key has already been removed, 
+#
+#   ALSO- remember to change the key that ansible uses!
+#
+
+- hosts: ssh-hosts
+  become: true
+  vars_files:
+  - /etc/ansible/become.pwd
+
+  tasks:
+    - name: Set up multiple authorized keys
+      ansible.posix.authorized_key:
+        user: loginaccount
+        state: present
+        key: '{{ item }}'
+      with_file:
+        - ~/.ssh/id_rsa
+        - ~/.ssh/id_ed25519
+
+    - name: Remove depricated keys
+      ansible.posix.authorized_key:
+        user: loginaccount
+        state: absent
+        key: '{{ item }}'
+      with_file:
+        - ~/.ssh/id_dsa
+        - ~/.ssh/id_ed25519_old
+      ignore_errors: true
