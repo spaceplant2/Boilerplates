@@ -24,7 +24,7 @@
         update_cache: yes
 
     - name: Install, ripped straight from wazuh install script
-      when: inventory_hostname != "wazuh" and inventory_hostname not in groups.dockers
+      when: inventory_hostname != "wazuh-server" and inventory_hostname not in groups.dockers
       block:
         - name: add wazuh repo
           shell:
@@ -46,7 +46,7 @@
             update_cache: yes
             install_recommends: yes
         - name: copy wazuh config file
-          when: ansible_hostname != "wazuh" and inventory_hostname != "wazhu.domain.mine"
+          when: ansible_hostname != "wazuh-server" and inventory_hostname != "wazhu-server.domain.mine"
           ansible.builtin.copy:
             src: /media/unified/setup/var/ossec/etc/ossec.conf
             dest: /var/ossec/etc/ossec.conf
@@ -85,7 +85,7 @@
 ###   osquery end
 
     - name: Install, modified for docker container monitoring
-      when: ansible_hostname != "wazuh" and inventory_hostname != "wazhu-server.domain.mine" and inventory_hostname in groups.dockers
+      when: ansible_hostname != "wazuh-server" and inventory_hostname != "wazhu-server.domain.mine" and inventory_hostname in groups.dockers
       block:
         - name: additional dependencies
           apt:
