@@ -1,0 +1,61 @@
+#    Install chrony service on your debian-based network. This relies on servers being in the group ntpServers,
+#    and the configuration files being stored locally to ansible. This also cleans away ntp which seems 
+#    to be stock for most linux distro's at the moment.
+#    Tansition to other distro's should necessitate a different install command and probably a different package name
+
+- hosts: group
+  become: "yes"
+  vars_files:
+  - /etc/ansible/become.pwd
+
+  tasks:
+    - name: time settings
+      block:
+        - name: set timezone
+          community.general.timezone:
+            name: America/Chicago
+          when: ansible_date_time.tz != "CST"
+    - name: remove NTP
+      block:
+        - name: uninstall ntp
+          apt:
+            pkg:
+              - ntp
+            state: absent
+            update_cache: no
+        - name: remove config files
+          file:
+            path: /etc/ntp.conf
+            state: absent
+    - name: chrony installation
+      block:
+        - name: install chrony
+          apt:
+            pkg:
+              - chrony
+              - ntpstat
+            state: present
+            install_recommends: yes
+            update_cache: yes
+        - name: copy chrony client config file
+          copy:
+            src: path/to/chrony.client.conf
+            dest: /etc/chrony.conf
+            remote_src: false
+            owner: root
+            group: root
+            mode: '0644'
+          when: inventory_hostname not in groups.ntp
+        - name: copy chrony server config file
+          copy:
+            src: /path/to/chrony.server.conf
+            dest: /etc/chrony.conf
+            remote_src: false
+            owner: root
+            group: root
+            mode: '0644'
+          when: inventory_hostname in groups.ntpServers
+        - name: Restart chrony service
+          ansible.builtin.service:
+            name: chrony
+            state: restarted
