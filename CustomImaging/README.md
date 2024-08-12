@@ -24,7 +24,7 @@ dismount image and commit changes
 dism /unmount-image /mountdir:C:\mount /commit
 ```
 
-create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi`
+create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi` or `\efi\microsoft\boot\efisys.bin`
 ```
 oscdimg -u2 -m -bC:\boot\boot64.efi C:\isoContents C:\custom-win.iso
 ```
