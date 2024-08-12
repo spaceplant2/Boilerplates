@@ -16,13 +16,15 @@ mount image `sources\install.wim`
 
 inject drivers
 ```
-Dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
+dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
 ```
 
 dismount image and commit changes
+```
+dism /unmount-image /mountdir:C:\mount /commit
+```
 
-create ISO using files copied from stock ISO with custom WIM at sources\install.wim
+create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi`
 ```
-oscdimg -u2 -m -bC:\boot\bootfix.bin C:\isoContents C:\custom-win.iso
+oscdimg -u2 -m -bC:\boot\boot64.efi C:\isoContents C:\custom-win.iso
 ```
-try using -j2 option instead of -u2
