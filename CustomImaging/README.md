@@ -10,6 +10,7 @@ Deployment and Imaging Tools Environment
 ## Process Work Flow
 acquire image from microsoft
 install on physical or virtual machine, install required programs
+*clean all contents from C:\Windows\Panther*
 run sysprep and retrieve image
 mount iso, and copy all files to preferred working directory
 mount image `sources\install.wim`
@@ -33,5 +34,5 @@ Dism /Export-Image /SourceImageFile:C:\Images\install.wim /SourceIndex:1 /Destin
 
 create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi` or `\efi\microsoft\boot\efisys.bin`
 ```
-oscdimg -u2 -m -bC:\boot\boot64.efi C:\isoContents C:\custom-win.iso
+oscdimg -u2 -m -bC:\efi\microsoft\boot\efisys.bin C:\isoContents C:\custom-win.iso
 ```
