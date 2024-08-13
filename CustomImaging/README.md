@@ -22,9 +22,11 @@ inject drivers
 dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
 ```
 
-dismount image and commit changes
+Reduce image size
 ```
-dism /unmount-image /mountdir:C:\mount /commit
+Dism /Image:C:\test\offline /cleanup-image /StartComponentCleanup /ResetBase    
+Dism /Unmount-Image /MountDir:C:\test\offline /Commit
+Dism /Export-Image /SourceImageFile:C:\Images\install.wim /SourceIndex:1 /DestinationImageFile:C:\Images\install_cleaned.wim
 ```
 
 create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi` or `\efi\microsoft\boot\efisys.bin`
