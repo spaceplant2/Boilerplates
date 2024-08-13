@@ -22,6 +22,8 @@ inject drivers
 dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
 ```
 
+copy your unattend.xml file to `C:\mount\Windows\Panther`
+
 Reduce image size
 ```
 Dism /Image:C:\test\offline /cleanup-image /StartComponentCleanup /ResetBase    
