@@ -13,9 +13,15 @@ install on physical or virtual machine, install required programs
 *clean all contents from C:\Windows\Panther*
 run sysprep and retrieve image
 mount iso, and copy all files to preferred working directory
+
 mount image `sources\install.wim`
 ```
  dism /mount-image /imagefile:C:\image.wim /index:1 /mountdir:c:\mount
+```
+
+add Windows updates
+```
+Dism /Image:C:\mount\windows /Add-Package /PackagePath=windows10.0-kb4456655-x64.msu  /LogPath=C:\mount\dism.log
 ```
 
 inject drivers
