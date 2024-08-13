@@ -21,7 +21,7 @@ mount image `sources\install.wim`
 
 add Windows updates
 ```
-Dism /Image:C:\mount\windows /Add-Package /PackagePath=windows10.0-kb4456655-x64.msu  /LogPath=C:\mount\dism.log
+Dism /Image:C:\mount\windows /Add-Package /PackagePath=windows10.0-kb4456655-x64.msu
 ```
 
 inject drivers
