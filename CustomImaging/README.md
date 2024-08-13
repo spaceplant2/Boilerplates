@@ -13,6 +13,9 @@ install on physical or virtual machine, install required programs
 run sysprep and retrieve image
 mount iso, and copy all files to preferred working directory
 mount image `sources\install.wim`
+```
+ dism /mount-image /imagefile:C:\image.wim /index:1 /mountdir:c:\mount
+```
 
 inject drivers
 ```
