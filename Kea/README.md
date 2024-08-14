@@ -1,9 +1,10 @@
 # Kea Configuration Examples and Explanations
 
-I've spend an extremely long and frustrating time going through the documentation for kea, and thinking there must be a better way. So I will be gathering nearly-working configurations with notations on how to fill in your own network's information.
+I've spend an extremely long and frustrating time going through the documentation for kea, and thinking there must be a better way. So here I am gathering nearly-working configurations with notations on how to fill in your own network's information. Comments are sprinkled sparingly throughout.
 
 # Things to Know
 [The Official Documentation](https://kea.readthedocs.io/en/)
+[A list of DHCP options](https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml)
 
 Kea has four pieces:
 - dhcp4: IP v4 address assignment
