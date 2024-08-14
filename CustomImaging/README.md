@@ -33,7 +33,12 @@ copy your unattend.xml file to `C:\mount\Windows\Panther`
 
 Reduce image size
 ```
-Dism /Image:C:\test\offline /cleanup-image /StartComponentCleanup /ResetBase    
+Dism /Image:C:\test\offline /cleanup-image /StartComponentCleanup /ResetBase
+DISM.exe /Image:C:\test\offline /Optimize-Image /Boot
+```
+
+Then unmount the image and export it to a new file
+```
 Dism /Unmount-Image /MountDir:C:\test\offline /Commit
 Dism /Export-Image /SourceImageFile:C:\Images\install.wim /SourceIndex:1 /DestinationImageFile:C:\Images\install_cleaned.wim
 ```
