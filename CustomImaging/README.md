@@ -55,6 +55,9 @@ Dism /Export-Image /SourceImageFile:C:\Images\install.wim /SourceIndex:1 /Destin
 ```
 
 create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi` or `\efi\microsoft\boot\efisys.bin`
+
+Open "Deployment and Imaging Tools Environments" command prompt as Administrator
+
 ```
 oscdimg -u2 -m -bC:\efi\microsoft\boot\efisys.bin C:\isoContents C:\custom-win.iso
 ```
