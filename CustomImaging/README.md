@@ -1,3 +1,6 @@
+# acknowledgements
+https://gist.github.com/rpc180/bc3e39daac329ed4de146a43ed3bc73e
+
 # Creating a custom image for Windows deployments
 
 Quick notes for building a custom ISO. The process seems to be the same for win10 and win11
@@ -58,6 +61,11 @@ create ISO using files copied from stock ISO with custom WIM at `sources\install
 
 Open "Deployment and Imaging Tools Environments" command prompt as Administrator
 
+tryin g the boot file that sits next to the oscdimg executable
 ```
-oscdimg -u2 -m -bC:\efi\microsoft\boot\efisys.bin C:\isoContents C:\custom-win.iso
+oscdimg -u2 -m -bC:"C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg\efisys.bin" C:\isoContents C:\custom-win.iso
+```
+
+```
+oscdimg.exe -m -o -u2 -udfver102 -bootdata:2#p0,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\boot\etfsboot.com"#pEF,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\efi\microsoft\boot\efisys.bin" "C:\Users\mreed\Desktop\iso\win11-custom\win11Contents" C:\Users\mreed\Desktop\iso\win11-custom\w11-all_drivers-20240815-bootfix.iso
 ```
