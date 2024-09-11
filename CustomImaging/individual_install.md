@@ -20,3 +20,40 @@ Download the Zip file [here](https://sourceforge.net/projects/ventoy/files/v1.0.
   - This causes the website to allow downloading of the ISO
 - You should now see an option to download an ISO
 - Select the multi-edition windows image and click download
+
+## Load the USB
+
+Copy the downloaded ISO onto the *large* partition that is on your USB
+
+## Restart in Boot Menu
+Spam function key at system power on.
+for HP:
+  - F9
+for Dell:
+  - F12
+
+## Image the Computer
+
+Select your USB, then select the appropriate windows image to boot from. The appropriate version should be selected based on the key stored in UEFI. When you have the option to select partitions, conventional wisdom says you should delete all partitions and then select 'New'. Or select partition #3, format it, select it again and delete it, then select 'New'. These approaches seem equivalent to me.
+
+## Bypass Microsoft Account Creation
+
+Once you reach an interactive prompt, you will want to take specific actions to avoid needing to access the Microsoft servers for login. There will be more than one restart which is expected- these generally occur without user interaction. When you reach the screen that asks for user telemetry, use the key combo *CTRL + Shift + F3* to bypass everything and load a desktop for the local administrator account. From here you can create the local account that you prefer, set the password that you want, and make any changes that you deem necessary.
+
+## Important Notes
+
+The local Administrator account will be disabled once this process is complete. Mkae sure that the account that you will use has been created before completing this process.
+
+You will see a small window for the "System Preparation Tool". when you have finished with all your changes to the system, use the default settings:
+- *Enter system Out-Of-Box_experience (OOBE)*
+- generalize is *not* selected
+- Shutdown Options set to *Reboot*
+then click OK
+
+## Completion
+
+You will eventually get to the (normal) login screen, where you will use the login and password that was created during the *bypass microsoft account creation* phase.
+
+## Finally
+
+This is not final- if you find any issues with this process, you can start over from the beginning with impunity. Microsoft has acknowledged the imperative for reimaging computers on an unfettered basis. This is, and will be for the forseeable future, freely available to all.
