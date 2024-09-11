@@ -44,7 +44,7 @@ Once you reach an interactive prompt, you will want to take specific actions to 
 
 ## Important Notes
 
-The local Administrator account will be disabled once this process is complete. Mkae sure that the account that you will use has been created before completing this process.
+The local Administrator account will be disabled once this process is complete. Make sure that the account that you will use has been created before completing this process.
 
 You will see a small window for the "System Preparation Tool". when you have finished with all your changes to the system, use the default settings:
 - *Enter system Out-Of-Box_experience (OOBE)*
