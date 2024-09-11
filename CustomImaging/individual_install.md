@@ -42,6 +42,10 @@ Select your USB, then select the appropriate windows image to boot from. The app
 
 Once you reach an interactive prompt, you will want to take specific actions to avoid needing to access the Microsoft servers for login. There will be more than one restart which is expected- these generally occur without user interaction. When you reach the screen that asks for user telemetry, use the key combo *CTRL + Shift + F3* to bypass everything and load a desktop for the local administrator account. From here you can create the local account that you prefer, set the password that you want, and make any changes that you deem necessary.
 
+## Create Local Account
+
+https://answers.microsoft.com/en-us/windows/forum/all/how-to-create-a-local-account-in-windows-11/24c2e160-ac65-4748-a733-529e6507dfdf
+
 ## Important Notes
 
 The local Administrator account will be disabled once this process is complete. Make sure that the account that you will use has been created before completing this process.
