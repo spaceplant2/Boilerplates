@@ -27,8 +27,10 @@ Copy the downloaded ISO onto the *large* partition that is on your USB
 
 ## Restart in Boot Menu
 Spam function key at system power on.
+
 for HP:
   - F9
+
 for Dell:
   - F12
 
