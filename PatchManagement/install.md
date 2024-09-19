@@ -1,5 +1,5 @@
-# How it goes for me
-Notes on Setting up Patchman from [Marcus Furlong](https://github.com/furlongm/patchman)
+# How it worked for me
+Notes on Setting up Patchman from [Marcus Furlong](https://github.com/furlongm/patchman). A little introduction: Patchman tracks updates for you and lets you know what may or may not need to be addressed on your attached systems. It does require a client to be installed on all monitored systems.
 
 ### My OS
 I chose Debian 12 because Ubuntu 22.04 is being phased out in my environment. I do not have an actual issue with the other supproted distro's, there's just only so much space in my head for new info. Thusly, sticking with debisn-based is the only sensical option for me here.
@@ -21,6 +21,9 @@ server=https://patchman.example.com
 ```
 Now we head on over to `/etc/apache2/ports.conf` and add in a second listen statement under the currnet one.
 ```
+
+## Further Actions
+I will need to create systemd unit files for the various server components as well as one for the client, but for now everything is running properly. It might be worth it to create an ansible playbook that makes sure the server components are running, then starts the client for a short time on each monitored machine.
 Listen 80    #current statement
 Listen 443   #add this statement
 ```
