@@ -12,5 +12,17 @@ I am all about hitting it correctly the first time- and this is exactly where we
 - From the directions, it is implied that an Apache server will be needed. Using the repo handles this install and almost all configuration for you. The notable exception is that allowed hosts (or networks) will need to be added. I highly suggest using the repo's.
 - 
 
-## Next Thoughts
-Getting this server properly set to do its work is going to be an actual learning experience. I am going to have to learn about different mirrors for different distros. 
+## Hostname Configuration
+This was fun to go through. It's been a long time since I've set up an apache server manually and there were quite a few things that had me stuck for a moment. The gist of it, however, is we need to make the hostname match throughout patchman *and* apache. So let's start with patchman!
+
+In the file `/etc/patchman/patchman-client.conf` fix the hostname. I prefer to make it match what's in my DNS, but an IP is fine here if you are using a static. Notice that the client is using 443 to send statistics as this will be relevant to Apache configuration.
+```
+server=https://patchman.example.com
+```
+Now we head on over to `/etc/apache2/ports.conf` and add in a second listen statement under the currnet one.
+```
+Listen 80    #current statement
+Listen 443   #add this statement
+```
+Lastly, we fix the hostname for the enabled site in `/etc/apache2/sites-enabled/000-default.conf` by uncommenting and changing the ServerName directive on line 9. Again, I like to make this match my dns records, but this is whatever you want to put in your browser's address bar to access patchman.
+All that's left is to restart apache with `systemctl restart apache2` and test!
