@@ -16,4 +16,4 @@ Unit=patchman-client.service
 
 [Install]
 WantedBy=multi-user.target
-Alias=Patchman-Client.timer
+Alias=patchman-client.timer
