@@ -1,6 +1,5 @@
 [Unit]
 Description=Patchman Client
-Documentation=man:patchman(8)
 After: multi-user.target
 
 [Service]
