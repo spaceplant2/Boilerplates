@@ -28,5 +28,5 @@ Lastly, we fix the hostname for the enabled site in `/etc/apache2/sites-enabled/
 All that's left is to restart apache with `systemctl restart apache2` and test!
 
 ## Further Actions
-[SystemD Manual](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)
+[SystemD Manual](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)  
 I will need to create systemd unit files for the various server components as well as one for the client, but for now everything is running properly. It might be worth it to create an ansible playbook that makes sure the server components are running, then starts the client for a short time on each monitored machine.
