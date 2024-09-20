@@ -1,3 +1,6 @@
+###  This is completely incorrect. Patchman-client needs to be executed periodically
+#    because it shuts down after sending the report to the server.
+
 [Unit]
 Description=Patchman Client
 After: multi-user.target
