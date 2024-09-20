@@ -21,11 +21,12 @@ server=https://patchman.example.com
 ```
 Now we head on over to `/etc/apache2/ports.conf` and add in a second listen statement under the currnet one.
 ```
-
-## Further Actions
-I will need to create systemd unit files for the various server components as well as one for the client, but for now everything is running properly. It might be worth it to create an ansible playbook that makes sure the server components are running, then starts the client for a short time on each monitored machine.
 Listen 80    #current statement
 Listen 443   #add this statement
 ```
 Lastly, we fix the hostname for the enabled site in `/etc/apache2/sites-enabled/000-default.conf` by uncommenting and changing the ServerName directive on line 9. Again, I like to make this match my dns records, but this is whatever you want to put in your browser's address bar to access patchman.
 All that's left is to restart apache with `systemctl restart apache2` and test!
+
+## Further Actions
+[SystemD Manual](https://www.freedesktop.org/software/systemd/man/latest/systemd.unit.html)
+I will need to create systemd unit files for the various server components as well as one for the client, but for now everything is running properly. It might be worth it to create an ansible playbook that makes sure the server components are running, then starts the client for a short time on each monitored machine.
