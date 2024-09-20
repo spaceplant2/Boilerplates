@@ -1,1 +1,15 @@
+###  launches the patchman-client report generator on a schedule. The time interval needs to be fixed
 
+
+[Unit]
+Description=Monthly Timer for patchman-client service
+
+[Timer]
+OnCalendar=*-*-1 02:00:00
+AccuracySec=6h
+RandomizedDelaySec=1h
+Persistent=true
+Unit=patchman-client.service
+
+[Install]
+WantedBy=multi-user.target
