@@ -1,7 +1,11 @@
 [Unit]
 Description=Patchman Client
 Documentation=man:patchman(8)
+After: multi-user.target
 
 [Service]
 ExecStart=/usr/sbin/patchman-client -s patchman.example.com
-Restart=on-abort
+Restart=on-failure
+
+[Install]
+Alias=patchman-client.service
