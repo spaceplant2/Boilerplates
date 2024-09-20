@@ -1,1 +1,7 @@
+[Unit]
+Description=Patchman Client
+Documentation=man:patchman(8)
 
+[Service]
+ExecStart=/usr/sbin/patchman-client -s patchman.example.com
+Restart=on-abort
