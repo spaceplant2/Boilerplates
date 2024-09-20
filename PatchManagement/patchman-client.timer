@@ -8,7 +8,7 @@
 Description=Monthly Timer for patchman-client service
 
 [Timer]
-OnCalendar=* *-*-* 02:00:00
+OnCalendar=*-*-* 02:00:00
 AccuracySec=5m
 RandomizedDelaySec=1h
 Persistent=true
@@ -16,3 +16,4 @@ Unit=patchman-client.service
 
 [Install]
 WantedBy=multi-user.target
+Alias=Patchman-Client.timer
