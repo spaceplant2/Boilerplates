@@ -4,7 +4,7 @@
 
 [Unit]
 Description=Patchman Client
-After: multi-user.target
+After=multi-user.target
 
 [Service]
 ExecStart=/usr/sbin/patchman-client -s patchman.example.com
