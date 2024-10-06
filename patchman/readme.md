@@ -10,7 +10,6 @@ I am all about hitting it correctly the first time- and this is exactly where we
 ### Stylistic Observations
 - The directions are written assuming that the user will be logged on with the root account. If you are not using root (and I highly suggest you *do not* enable root), make sure to replace all redirects `>` with `| sudo tee`. The files being written to are all controlled access. To silence the echoed output, append `> /dev/null` to the command. loggong on with user `root` was viable some time ago, but not so adviseable anymore.
 - From the directions, it is implied that an Apache server will be needed. Using the repo handles this install and almost all configuration for you. The notable exception is that allowed hosts (or networks) will need to be added. I highly suggest using the repo's.
-- 
 
 ## Hostname Configuration
 This was fun to go through. It's been a long time since I've set up an apache server manually and there were quite a few things that had me stuck for a moment. The gist of it, however, is we need to make the hostname match throughout patchman *and* apache. So let's start with patchman!
