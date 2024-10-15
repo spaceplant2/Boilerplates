@@ -1,0 +1,13 @@
+###  Patchman-client needs to be executed periodically because it shuts down after sending the report to the server.
+#    This is handled by patchman-client.timer. Need to deal with systemd reporting an error when the client ends sucessfully.
+#    Perhaps there is an exit code to employ here?  -[ echo $? ]-
+
+[Unit]
+Description=Patchman Client
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/sbin/patchman-client -s patchman.example.com
+
+[Install]
+Alias=patchman-client.service
