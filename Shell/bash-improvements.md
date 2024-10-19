@@ -18,4 +18,5 @@ This is my attempt to fix the few things that are problematic for me in bash.
 # Utilities
 - [terminal.sexy](https://terminal.sexy/): color scheme designer
 - [4 bit](https://ciembor.github.io/4bit/): color scheme designer
+- [root loops](https://rootloops.sh/): color scheme designer
 
