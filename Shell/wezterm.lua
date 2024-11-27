@@ -113,17 +113,17 @@ config.colors = {
 }
 
 config.background = {
-  {
-      source = {
-        File = bg_image,
-      },
-      repeat_x = 'none',
-      repeat_y = 'Mirror',
-      hsb = bg_dimmer,
-      width = '100%',
-      attachment = { Parallax = 0.25 },
-    }
+{
+    source = {
+      File = bg_image,
+    },
+    repeat_x = 'NoRepeat',
+    repeat_y = 'Mirror',
+    hsb = bg_dimmer,
+    width = '100%',
+    attachment = { Parallax = 0.25 },
   }
+}
 
   --  set the working environment
 config.default_cwd = ""
@@ -154,8 +154,9 @@ if is_linux then
     },
     {
       label = 'Bash',
-      args = '/usr/bin/bash'
+      args = '/usr/bin/bash',
     }
+  }
 end
 -- and finally, return the configuration to wezterm
 return config
