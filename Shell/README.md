@@ -8,3 +8,4 @@ This is where all my shell-related content will live. There will be writeups, ex
 [OpenVPN - Nord script](openvpn.sh)  
 [Readline Writeup](readline.md)  
 [Readline Example Config](inputrc)  
+[Wezterm Config](wezterm.lua)  
