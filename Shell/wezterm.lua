@@ -154,9 +154,11 @@ if is_linux then
     },
     {
       label = 'Bash',
-      args = '/usr/bin/bash',
+      args = { '/usr/bin/bash' },
     }
   }
+  config.initial_cols = 100
+  config.initial_rows = 28
 end
 -- and finally, return the configuration to wezterm
 return config
