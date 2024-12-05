@@ -1,8 +1,9 @@
-###  Launches the patchman-client report generator on a schedule. Format is DayOfWeek YY-MM-DD hh:mm:SS
-#    so currently this should fire every day at 2am. Since a large number of clients could cause overload 
-#    when using the same unit files, consider increasing the RandomizedDelaySec to something much larger.
-#    Alternatively, the monotonic timer could be employed, but this will basically rely on chaos and chance
-#    to fix the issue.
+###  Launches the patchman-client report generator on a schedule. Format is:
+#    DayOfWeek YY-MM-DD hh:mm:SS
+#    so currently this should fire every day at 2am. Since a large number of clients could cause 
+#    overload when using the same unit files, consider increasing the RandomizedDelaySec to 
+#    something much larger. Alternatively, the monotonic timer could be employed, but this would 
+#    basically rely on chaos and chance to fix the timing issue.
 
 [Unit]
 Description=Monthly Timer for patchman-client service

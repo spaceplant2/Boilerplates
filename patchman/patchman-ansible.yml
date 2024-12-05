@@ -1,0 +1,38 @@
+###   add patchman-client and run it on a daily basis.
+
+- hosts: patchman
+  become: "yes"
+  vars_files:
+    - /etc/ansible/become.pwd
+
+  tasks:
+    - name: add apt key
+      ansible.builtin.get_url:
+        url: https://repo.openbytes.ie/openbytes.gpg
+        dest: /etc/apt/keyrings/openbytes.gpg
+    - name: add apt source
+      ansible.builtin.apt_repository:
+        install_python_apt: true
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/openbytes.gpg] https://repo.openbytes.ie/patchman/ubuntu/ jammy main"
+        filename: patchman
+        state: present
+        update_cache: true
+
+    - name: Install patchman-client
+      apt:
+        pkg:
+          - patchman-client
+
+    - name: copy config files
+      copy: src={{ item.src }} dest={{ item.dest }}
+      with_items:
+        - { src:  '/patchman-client.conf',
+            dest: '/etc/patchman/patchman-client.conf' }
+
+    - name: Create Cron job for patchman-client
+      ansible.builtin.cron:
+        name: "patchman check-in"
+        # minute: "40"
+        minute: "{{ 58 | random(seed=inventory_hostname) }}"
+        hour: "7"
+        job: "/usr/sbin/patchman-client -v 2>&1 | /usr/bin/logger -t patchman-client"
