@@ -1,4 +1,5 @@
-###   add patchman-client and run it on a daily basis.
+###   add patchman-client for Debian environments and run it on a daily basis. This uses a
+#       random number based on the hostname to reduce reporting collisions.
 
 - hosts: patchman
   become: "yes"
