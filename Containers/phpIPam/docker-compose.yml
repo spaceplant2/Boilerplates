@@ -1,0 +1,54 @@
+###   see https://github.com/phpipam-docker/phpipam-docker for documentation
+
+services:
+  phpipam-web:
+    image: phpipam/phpipam-www:latest
+    container_name: phpipam-web
+    ports:
+      - "80:80"
+    environment:
+      - TZ=America/Chicago
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=my_secret_phpipam_pass
+      - IPAM_DATABASE_WEBHOST=%
+      - IPAM_DISABLE_INSTALLER=1
+
+    restart: unless-stopped
+    volumes:
+      - ./logo:/phpipam/css/images/logo
+      - ./ca:/usr/local/share/ca-certificates:ro
+# phpipam scripts
+      - ./scripts:/phpipam/functions/scripts
+    depends_on:
+      - phpipam-mariadb
+
+  phpipam-cron:
+    image: phpipam/phpipam-cron:latest
+    container_name: phpipam-cron
+    environment:
+      - TZ=America/Chicago
+      - IPAM_DATABASE_HOST=phpipam-mariadb
+      - IPAM_DATABASE_PASS=my_secret_phpipam_pass
+      - SCAN_INTERVAL=1h
+    restart: unless-stopped
+    volumes:
+      - ./ca:/usr/local/share/ca-certificates:ro
+# cron job location
+      - type: bind
+        source: ./crontabs/
+        target: /etc/crontabs/
+# phpipam scripts
+      - type: bind
+        source: ./scripts/
+        target: /phpipam/functions/scripts/
+    depends_on:
+      - phpipam-mariadb
+
+  phpipam-mariadb:
+    image: mariadb:latest
+    container_name: phpipam-mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=my_secret_mysql_root_pass
+    restart: unless-stopped
+    volumes:
+      - ./db-data:/var/lib/mysql

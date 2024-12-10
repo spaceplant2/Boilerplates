@@ -1,0 +1,10 @@
+###     current schedule has tasks running every hour with minutes stggered to 
+#       reduce concurrent workloads
+
+m h d   m   d
+
+0 * *   *   * /usr/bin/php /phpipam/functions/scripts/discoveryCheck.php
+5 * *   *   * /usr/bin/php /phpipam/functions/scripts/pingCheck.php
+10 * *  *   * /usr/bin/php /phpipam/functions/scripts/resolveIPaddresses.php
+30 * *  *   * /usr/bin/php /phpipam/functions/scripts/remove_offline_addresses.php
+
