@@ -1,0 +1,36 @@
+###   This is really a basic update playbook that uses apt, so will work on pretty much any Dbian
+#       system. Only small changes are required to make this work for other package managers as well.
+
+- hosts: proxmox
+  become: 'yes'
+  become_user: root
+  vars_files:
+    - /etc/ansible/become.pwd
+
+  tasks:
+    - name: update all software
+      apt:
+        update_cache: yes
+        install_recommends: yes
+        upgrade: dist
+        autoclean: yes
+        autoremove: yes
+
+    - name: report on pending actions
+      shell: 'apt-get -s dist-upgrade | grep upgrad'
+      register: pending_actions
+
+    - name: report on uptime
+      shell: 'uptime'
+      register: uptime
+
+# Restart required?
+    - name: check if reboot is needed
+      stat: path=/var/run/reboot-required
+      register: reboot_required
+
+    - name: print pending updates and uptime
+      debug:
+        msg:
+          - "{{ uptime.stdout }}"
+          - "{{ reboot_required.stat.exists }}"

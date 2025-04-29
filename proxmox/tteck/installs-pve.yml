@@ -1,0 +1,24 @@
+###   Packages that I consider essential to proxmox functionality. Add any additional package
+#       names to the 'packages' variable.
+
+- hosts: proxmox
+  become: 'yes'
+  become_user: root
+  vars_files:
+    - /etc/ansible/become.pwd
+  vars:
+    packages:
+      - iucode-tool
+
+  tasks:
+    - name: install cli programs
+      apt:
+        name: '{{ packages }}'
+        state: present
+    - name: update all software
+      apt:
+        update_cache: yes
+      #  install_recommends: yes
+        upgrade: dist
+        autoclean: yes
+        autoremove: yes
