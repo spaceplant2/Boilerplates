@@ -23,10 +23,10 @@ local fg_dimmer = {
 }
 -- set background images on per-OS basis
 if is_linux then
-  bg_image = '/home/edothas/Pictures/1257089-3709430.jpg'
+  bg_image = ''
 end
 if is_windows then
-  bg_image = 'C:\\Users\\mreed\\OneDrive - Mueller Water Products\\Pictures\\194427-outer-space-background-image.jpg'
+  bg_image = ''
 end
 
 if is_linux then
