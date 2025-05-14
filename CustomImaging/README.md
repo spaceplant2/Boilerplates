@@ -1,5 +1,7 @@
 # acknowledgements
-https://gist.github.com/rpc180/bc3e39daac329ed4de146a43ed3bc73e
+[](https://gist.github.com/rpc180/bc3e39daac329ed4de146a43ed3bc73e)
+
+[On SuperUser](https://superuser.com/questions/1624231/how-to-create-an-unattended-windows-installation-medium-iso-usb-supporting-secur)
 
 # Creating a custom image for Windows deployments
 
@@ -61,11 +63,8 @@ create ISO using files copied from stock ISO with custom WIM at `sources\install
 
 Open "Deployment and Imaging Tools Environments" command prompt as Administrator
 
-tryin g the boot file that sits next to the oscdimg executable
+This will work with minor alterations to the actual paths.
 ```
-oscdimg -u2 -m -bC:"C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg\efisys.bin" C:\isoContents C:\custom-win.iso
+oscdimg -m -o -u2 -udfver102 -bootdata:2#p0,e,b"C:\w11-extracted\boot\etfsboot.com"#pEF,e,b"C:\w11-extracted\efi\microsoft\boot\efisys.bin" "C:\w11-extracted" "C:\w11-automated.iso"
 ```
 
-```
-oscdimg.exe -m -o -u2 -udfver102 -bootdata:2#p0,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\boot\etfsboot.com"#pEF,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\efi\microsoft\boot\efisys.bin" "C:\Users\mreed\Desktop\iso\win11-custom\win11Contents" C:\Users\mreed\Desktop\iso\win11-custom\w11-all_drivers-20240815-bootfix.iso
-```
