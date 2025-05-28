@@ -1,48 +1,5 @@
-###   List of exit codes for installers https://docs.netecm.ch/launcher/troubleshooting/msi-exit-codes.html
 
 $msi_installers = @(
-  [PSCustomObject]@{
-    Name   = "Automox"
-    Action = "/I"
-    Path   = "$server\Automox\Automox.msi"
-    Args   = "/qb ACCESSKEY=9383bb0e-c93a-4891-b037-157a715faa7b"
-  },
-  [PSCustomObject]@{
-    Name   = "AirTame"
-    Action = "/I"
-    Path   = "$server\Airtame\Airtame-4.10.0-setup.msi"
-    Args   = "/qb"
-  },
-  [PSCustomObject]@{
-    Name   = "Cortex"
-    Action = "/I"
-    Path   = "$server\PaloAlto\Cortex_87_x64.msi"
-    Args   = "/qb"
-  },
-  [PSCustomObject]@{
-    Name   = "Cyberark"
-    Action = "/I"
-    Path   = "$server\Cyberark\CyberArk25.2.0.2476\VFAgentSetupX64.msi"
-    Args   = "/qb INSTALLATIONKEY=bkYoKmMtX2w5Ok8lIkpLZ0E3R183UUhMIm9rO3JuZzE= CONFIGURATION=$server\Cyberark\CyberArk25.2.0.2476\CyberArkEPMAgentSetupWindows.config"
-  },
-  [PSCustomObject]@{
-    Name   = "Malwarebytes"
-    Action = "/I"
-    Path   = "$server\Malwarebytes\MBEndpointAgent.x64.msi"
-    Args   = "/qb"
-  },
-  [PSCustomObject]@{
-    Name   = "Mimecast"
-    Action = "/I"
-    Path   = "$server\Mimecast\Mimecast_for_outlook.msi"
-    Args   = "/qb"
-  },
-  [PSCustomObject]@{
-    Name   = "GlobalProtect"
-    Action = "/I"
-    Path   = "$server\PaloAlto\GlobalProtect64.msi"
-    Args   = "/qb PORTAL=connect.muellercompany.com"
-  },
   [PSCustomObject]@{
     Name   = "Zoom Plugin"
     Action = "/I"
@@ -54,73 +11,16 @@ $msi_installers = @(
 # Define our installers
 $exe_installers = @(
   [PSCustomObject]@{
-    Name       = "Office"
-    Path       = "$server\Microsoft\OfficeSetup.exe"
-    Args       = "Setup"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Acrobat"
-    Path       = "~\Acrobat_Reader_en_install.exe"
-    Args       = "/quiet /norestart"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Bomgar Client"
-    Path       = "~\bomgar-scc-w0eec30yzz7gewzy5gj78fg5hgfejzx5hizd6fic40hc90.exe"
-    Args       = "/quiet"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Dell Update"
-    Path       = "$server\Dell\Dell-Command.exe"
-    Args       = "/s"
-    ValidExitCodes = @(0, 2, 3010)
-  },
-  [PSCustomObject]@{
     Name       = "Chrome"
     Path       = "$server\Google\ChromeSetup.exe"
     Args       = "/install /silent"
     ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Firefox"
-    Path       = "$server\Mozilla\FirefoxSetup.exe"
-    Args       = "/s"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Logitech Unifying"
-    Path       = "$server\logi\unifying252.exe"
-    Args       = "/S"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Logitech Options+"
-    Path       = "$server\logi\logioptionsplus_installer.exe"
-    Args       = "/quiet"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "PhishAlert"
-    Path       = "$server\PhishAlert\PhishAlertButtonSetup.exe"
-    Args       = '/q /ComponentArgs "MainInstaller":"LICENSEKEY=""4EC90AC040A9F1514C4B12E6A277D147"""'
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "VCredist 2019"
-    Path       = "$server\Microsoft\VC_redist.x64.exe"
-    Args       = "/install /passive /quiet /norestart"
-    ValidExitCodes = @(0, 3010)
-  },
-  [PSCustomObject]@{
-    Name       = "Zoom"
-    Path       = "$server\Zoom\ZoomInstallerFull.exe"
-    Args       = "/qb /norestart"
-    ValidExitCodes = @(0, 3010)
   }
+
 )
 
+###   List of exit codes for installers https://docs.netecm.ch/launcher/troubleshooting/msi-exit-codes.html
+#       Currently not properly utilized, this will eventually be utilized by write-log
 $exitCodeMap = @{
   # Common Success Codes
   0 = @{ Message = "Success"; Severity = "Info" }
