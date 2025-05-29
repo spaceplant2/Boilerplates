@@ -1,20 +1,23 @@
-# acknowledgements
-https://gist.github.com/rpc180/bc3e39daac329ed4de146a43ed3bc73e
+# Acknowledgements
+[github by Romel](https://gist.github.com/rpc180/bc3e39daac329ed4de146a43ed3bc73e)  
+[On SuperUser](https://superuser.com/questions/1624231/how-to-create-an-unattended-windows-installation-medium-iso-usb-supporting-secur)
 
 # Creating a custom image for Windows deployments
 
-Quick notes for building a custom ISO. The process seems to be the same for win10 and win11
+Quick notes for building a custom ISO. The process is basically the same for win10 and win11. Tools are available from Microsoft.
+Some programs might need to be installed on the individual computers after this process is finished.
 
 ## The Tools
 DISM lives in the system folder of windows installs
 [Windows Assessment and Deployment Kit](https://learn.microsoft.com/en-us/windows-hardware/get-started/adk-install)
 Deployment and Imaging Tools Environment
 
-## Process Work Flow
-acquire ISO image from microsoft
-install on physical or virtual machine, install required programs
-*clean all contents from C:\Windows\Panther*
-run sysprep and retrieve image
+## Customized Image Work Flow
+- acquire ISO image from microsoft
+- install on physical or virtual machine
+- install required programs
+- *clean all contents from C:\Windows\Panther*
+- run sysprep and retrieve image
 
 Check for the desired index location.
 ```
@@ -59,13 +62,8 @@ Dism /Export-Image /SourceImageFile:C:\Images\install.wim /SourceIndex:1 /Destin
 
 create ISO using files copied from stock ISO with custom WIM at `sources\install.wim`. Boot file might be at `\efi\boot\bootx64.efi` or `\efi\microsoft\boot\efisys.bin`
 
-Open "Deployment and Imaging Tools Environments" command prompt as Administrator
-
-tryin g the boot file that sits next to the oscdimg executable
+Open "Deployment and Imaging Tools Environments" command prompt as Administrator. The following will work with minor alterations to the actual paths.
 ```
-oscdimg -u2 -m -bC:"C:\Program Files (x86)\Windows Kits\10\Assessment and Deployment Kit\Deployment Tools\amd64\Oscdimg\efisys.bin" C:\isoContents C:\custom-win.iso
+oscdimg -m -o -u2 -udfver102 -bootdata:2#p0,e,b"C:\w11-extracted\boot\etfsboot.com"#pEF,e,b"C:\w11-extracted\efi\microsoft\boot\efisys.bin" "C:\w11-extracted" "C:\w11-automated.iso"
 ```
 
-```
-oscdimg.exe -m -o -u2 -udfver102 -bootdata:2#p0,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\boot\etfsboot.com"#pEF,e,b"C:\Users\mreed\Desktop\iso\win11-custom\win11Contents\efi\microsoft\boot\efisys.bin" "C:\Users\mreed\Desktop\iso\win11-custom\win11Contents" C:\Users\mreed\Desktop\iso\win11-custom\w11-all_drivers-20240815-bootfix.iso
-```

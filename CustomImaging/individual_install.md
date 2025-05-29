@@ -4,7 +4,7 @@ Creating the easiest I can make directions to reinstall windows for recovery pur
 
 ## Create the USB drive
 [Ventoy](https://github.com/ventoy/Ventoy) is your best friend!
-Download the Zip file [here](https://sourceforge.net/projects/ventoy/files/v1.0.99/ventoy-1.0.99-windows.zip/download), extract, and run Ventoy2Disk.exe -- witht the USB plugged in to the computer, of course!
+Download the Zip file [here](https://sourceforge.net/projects/ventoy/files/v1.0.99/ventoy-1.0.99-windows.zip/download), extract, and run Ventoy2Disk.exe -- with the USB plugged in to the computer, of course!
 
 ## Download the ISO
 [tom's hardware walkthrough](https://www.tomshardware.com/how-to/clean-install-windows-11)
