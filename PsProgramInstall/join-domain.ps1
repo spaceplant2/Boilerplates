@@ -1,10 +1,11 @@
 ###   build environment and launch program installers
 #       This is intended to be genericised for public consumption
+#       Copy of program-install.ps1, but pre-set to join domain for use from USB
 
 function Select-ProgramGroups {
   <#
   .SYNOPSIS
-    Select the desired groups of programs to install
+    Select the desired groups of programs to install, this version for domain joining only
 
   .DESCRIPTION
     This function will walk through a list of selections to guide program installation. If no parameters are set, the questionnaire will engage.
@@ -38,15 +39,15 @@ function Select-ProgramGroups {
   #>
   [CmdletBinding(SupportsShouldProcess = $true)]
   param(
-    [string]$Domain,
-    [string]$Rename,
-    [string]$Power,
-    [string]$Programs,
-    [String]$FreeCAD,
-    [string]$CAD,
-    [string]$Cleanup,
-    [string]$FixProfile,
-    [Switch]$Defaults
+    [string]$Domain     = "y",
+    [string]$Rename     = "n",
+    [string]$Power      = "y",
+    [string]$Programs   = "n",
+    [String]$FreeCAD    = "n",
+    [string]$CAD        = "n",
+    [string]$FixProfile = "n",
+    [string]$Cleanup    = "n",
+    [Switch]$Defaults   = "n"
   )
   
   begin {
@@ -130,4 +131,4 @@ function Select-ProgramGroups {
 . .\install-funs.ps1
 
 ###   Then launch it
-Select-ProgramGroups
+Select-ProgramGroups -Domain -Power

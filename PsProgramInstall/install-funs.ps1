@@ -147,22 +147,23 @@ function Join-Domain {
     Write-Log "=== Domain Join Process Started ===" -LogPath $LogPath
     $oldName = $env:COMPUTERNAME
     Write-Log "Current computer name: $oldName" -LogPath $LogPath
+
+    # Get site abbreviation if not provided
+    if (-not $PSBoundParameters.ContainsKey('SiteAbbreviation')) {
+      $SiteAbbreviation = Read-Host "What site abbreviation are you using?"
+      Write-Log "User provided site abbreviation: $SiteAbbreviation" -LogPath $LogPath
+    }
+
+    # Generate new name
+    $serialNumber = (Get-WmiObject -Class win32_bios).SerialNumber
+    $newName = "$SiteAbbreviation-$serialNumber".ToUpper()
+    
+    Write-Log "Generated computer name will be: $newName" -LogPath $LogPath -Level Info
+
   }
 
   process {
     try {
-      # Get site abbreviation if not provided
-      if (-not $PSBoundParameters.ContainsKey('SiteAbbreviation')) {
-        $SiteAbbreviation = Read-Host "What site abbreviation are you using?"
-        Write-Log "User provided site abbreviation: $SiteAbbreviation" -LogPath $LogPath
-      }
-
-      # Generate new name
-      $serialNumber = (Get-WmiObject -Class win32_bios).SerialNumber
-      $newName = "$SiteAbbreviation-$serialNumber"
-      
-      Write-Log "Generated computer name will be: $newName" -LogPath $LogPath -Level Info
-
       if ($PSCmdlet.ShouldProcess("Domain join", "Join computer '$oldName' to domain '$DomainName' as '$newName'")) {
         Add-Computer -ComputerName $oldName -NewName $newName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force
         Write-Log "Successfully joined domain '$DomainName'. Computer will restart with new name '$newName'" -LogPath $LogPath
@@ -430,7 +431,10 @@ function Install-MSI {
     # Generate summary report
     Write-Log "`n=== Installation Summary ==="
     $installers | ForEach-Object {
-      Write-Log "$($_.Name.PadRight(15)) - $($_.Status.PadRight(7)) - Exit Code: $($_.ExitCode) - Duration: $([math]::Round($_.Duration.TotalSeconds,2))s"
+      # Write-Log "$($_.Name.PadRight(15)) - $($_.Status.PadRight(7)) - Exit Code: $($_.ExitCode) - Duration: $([math]::Round($_.Duration.TotalSeconds,2))s"
+      if ($_.Name){
+        Write-Log "$($_.Name) - $($_.Status) - Exit Code: $($_.ExitCode) - Duration: $([math]::Round($_.Duration.TotalSeconds,2))s"
+      }
     }
 
     # Save log to file
@@ -1169,3 +1173,182 @@ function Get-FileFromList {
 
 }
 
+function Mount-NetworkShares {
+  <#
+  .SYNOPSIS
+    Mount network shares
+
+  .DESCRIPTION
+    Reads a list of paths and mounts them as network shares to the specified drive letter
+  
+  .PARAMETER MntPath
+    Network share path if mounting a single item
+
+  .PARAMETER MntLetter
+    Letter to use when mounting single item
+
+  .PARAMETER SharesList
+    List of shares and drive letters for mounting more than one item
+  #>
+
+  [CmdletBinding(SupportsShouldProcess = $true)]
+    param (
+      [Parameter(ValueFromPipeline = $true, Position = 0)]
+      [array]$SharesList,
+
+      [string]$MntPath,
+
+      [string]$MntLetter,
+
+      [string]$Group
+    )
+
+  begin {
+    if (-not $SharesList){
+      if ((-not $MntPath) -or (-not $MntLetter)){
+        $MntLetter  = Read-Host "What is the Drive letter?"
+        $MntPath    = Read-Host "What is the full share path?"
+      }
+      $SharesList   = @(
+        [PSCustomObject]@{
+          Letter    = $MntLetter
+          Path      = $MntPath
+          Group     = ""
+        }
+      )
+    }
+  }
+
+  process {
+    foreach ($item in $SharesList){
+      if (($item.Group -eq $Group) -or ($item.Group -eq "all")) {
+        try {
+          $exists = Get-PSDrive -Name $item.Letter -ErrorAction Stop
+          Write-Log "Drive letter already exists at $($exists.Name), skipping"
+        }catch{
+            Write-Log "Adding $($item.Path) to drive letter $($item.Letter)"
+            New-PSDrive -Name $item.Letter -Root $item.Path -Persist -PSProvider "Filesystem" -Scope Global -ErrorAction Stop
+        }
+      }
+    }
+  }
+
+  end {
+
+  }
+}
+
+function Add-QuickAccess {
+  <#
+  .SYNOPSIS
+    Add QuickAccess items to a profile
+
+  .DESCRIPTION
+    Add QuickAccess items to File Explorer from a list
+
+  .PARAMETER List
+    Array of custom objects containing link information 
+
+  .PARAMETER Pin
+    Path when there is only one item to pin
+
+  .PARAMETER Action
+    Pin or unpin the item
+  #>
+
+  [CmdletBinding()]
+  param(
+    [Parameter(ValueFromPipeline = $true, Position = 0)]
+    [array]$List,
+    
+    [string]$Pin,
+
+    [string]$Action,
+
+    [string]$Group
+  )
+
+  begin {
+    if ((-not $Action) -or ($Action -eq "pin")) {
+      $Action = "PinToHome"
+    }elseif ($Action -eq "unpin") {
+      $Action = "UnpinFromHome"
+    }
+    if (-not $List){
+      if (-not $Pin){
+        $Pin = Read-Host "What is the path that you want to add to QuickAccess? "
+      }
+      $List = @(
+        [PSCustomObject]@{
+          $path   = $Pin
+        }
+      )
+    }
+    $objShell     = New-Object -ComObject Shell.Application
+    $ns           = "shell:::{679f85cb-0220-4080-b29b-5540cc05aab6}"
+    $CurrentPins  = ($objShell.Namespace($ns).Items() | Where-Object { $_.IsFolder -eq $true }).Name
+  }
+
+
+  process {
+    foreach ($item in $List){
+      $path1 = Split-Path -Path $item.path -Leaf
+      if ($Action -eq "PinToHome")
+        if ($path1 -in $CurrentPins) {
+          Write-Log "$($item.path) is already Pinned to QuickAccess, skipping"
+        }
+        elseif ($path1 -notin $CurrentPins) {
+          $objShell.NameSpace( $item.path ).Self.InvokeVerb($Action)
+          Write-Log "$($item.path) pinned to QuickAccess"
+        }
+        else {
+          Write-Log "Error in checking Current pins, No action taken"
+        }
+      }
+      elseif ($Action -eq "UnpinFromHome") {
+        if ($path1 -in $CurrentPins) {
+          $objShell.NameSpace( $item.path ).Self.InvokeVerb($Action)
+          Write-Log "$($item.path) unpinned from QuickAccess"
+        }
+        elseif ($path1 -notin $CurrentPins) {
+          Write-Log "$($item.path) is not Pinned to QuickAccess, skipping"
+        }
+        else {
+          Write-Log "Error in checking Current pins, No action taken"
+        }
+      }
+    }
+  }
+
+  end{
+
+  }
+
+}
+
+function Install-Printers {
+  <#
+  .SYNOPSIS
+
+  .DESCRIPTION
+
+  .PARAMETER Queue
+    Print server's path to the print queue
+
+  .PARAMETER Group
+    Group that the user will be part of
+  #>
+
+  [CmdletBinding()]
+  param(
+    [Parameter(ValueFromPipeline = $true, Position = 0)]
+    [array]$List,
+    
+    [string]$Pin,
+
+    [string]$Action,
+
+    [string]$Group
+  )
+
+}

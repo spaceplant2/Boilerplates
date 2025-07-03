@@ -1,26 +1,199 @@
+###   List of exit codes for installers https://docs.netecm.ch/launcher/troubleshooting/msi-exit-codes.html
 
 $msi_installers = @(
   [PSCustomObject]@{
-    Name   = "Zoom Plugin"
-    Action = "/I"
-    Path   = "$server\Zoom\ZoomOutlookPluginSetup.msi"
-    Args   = "/qb"
+    Name      = "Automox"
+    Action    = "/I"
+    Path      = "$server\Automox\Automox.msi"
+    Args      = "/qb ACCESSKEY=9383bb0e-c93a-4891-b037-157a715faa7b"
+  },
+  [PSCustomObject]@{
+    Name      = "AirTame"
+    Action    = "/I"
+    Path      = "$server\Airtame\Airtame-4.10.0-setup.msi"
+    Args      = "/qb"
+  },
+  [PSCustomObject]@{
+    Name      = "Cortex"
+    Action    = "/I"
+    Path      = "$server\PaloAlto\Cortex_87_x64.msi"
+    Args      = "/qb"
+  },
+  [PSCustomObject]@{
+    Name      = "Cyberark"
+    Action    = "/I"
+    Path      = "$server\Cyberark\VFAgentSetupX64_25.2.msi"
+    Args      = "/qb INSTALLATIONKEY=bkYoKmMtX2w5Ok8lIkpLZ0E3R183UUhMIm9rO3JuZzE= CONFIGURATION=$server\Cyberark\CyberArk25.2.0.2476\CyberArkEPMAgentSetupWindows.config"
+  },
+  [PSCustomObject]@{
+    Name      = "Malwarebytes"
+    Action    = "/I"
+    Path      = "$server\Malwarebytes\MBEndpointAgent.x64.msi"
+    Args      = "/qb"
+  },
+  [PSCustomObject]@{
+    Name      = "Mimecast"
+    Action    = "/I"
+    Path      = "$server\Mimecast\Mimecast_for_outlook.msi"
+    Args      = "/qb"
+  },
+  [PSCustomObject]@{
+    Name      = "GlobalProtect"
+    Action    = "/I"
+    Path      = "$server\PaloAlto\GlobalProtect64.msi"
+    Args      = "/qb PORTAL=connect.muellercompany.com"
+  },
+  [PSCustomObject]@{
+    Name      = "Zoom Plugin"
+    Action    = "/I"
+    Path      = "$server\Zoom\ZoomOutlookPluginSetup.msi"
+    Args      = "/qb"
   }
 )
 
 # Define our installers
 $exe_installers = @(
   [PSCustomObject]@{
-    Name       = "Chrome"
-    Path       = "$server\Google\ChromeSetup.exe"
-    Args       = "/install /silent"
+    Name      = "Office"
+    Path      = "$server\Microsoft\OfficeSetup.exe"
+    Args      = "Setup"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Acrobat"
+    Path      = "~\Acrobat_Reader_en_install.exe"
+    Args      = "/quiet /norestart"
+    ValidExitCodes = @(0, 3010)
+  },
+  # [PSCustomObject]@{
+  #   Name       = "Bomgar Client"
+  #   Path       = "~\bomgar-scc-w0eec30d1yhe6i17hxh8wwgd8wh8zz7iezywd7zc40hc90.exe"
+  #   Args       = "/quiet"
+  #   ValidExitCodes = @(0, 3010)
+  # },
+  [PSCustomObject]@{
+    Name      = "Dell Update"
+    Path      = "$server\Dell\Dell-Command.exe"
+    Args      = "/s"
+    ValidExitCodes = @(0, 2, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Chrome"
+    Path      = "$server\Google\ChromeSetup.exe"
+    Args      = "/install /silent"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Firefox"
+    Path      = "$server\Mozilla\FirefoxSetup.exe"
+    Args      = "/s"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Logitech Unifying"
+    Path      = "$server\logi\unifying252.exe"
+    Args      = "/S"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Logitech Options+"
+    Path      = "$server\logi\logioptionsplus_installer.exe"
+    Args      = "/quiet"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "PhishAlert"
+    Path      = "$server\PhishAlert\PhishAlertButtonSetup.exe"
+    Args      = '/q /ComponentArgs "MainInstaller":"LICENSEKEY=""4EC90AC040A9F1514C4B12E6A277D147"""'
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "VCredist 2019"
+    Path      = "$server\Microsoft\VC_redist.x64.exe"
+    Args      = "/install /passive /quiet /norestart"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "Zoom"
+    Path      = "$server\Zoom\ZoomInstallerFull.exe"
+    Args      = "/qb /norestart"
     ValidExitCodes = @(0, 3010)
   }
-
 )
 
-###   List of exit codes for installers https://docs.netecm.ch/launcher/troubleshooting/msi-exit-codes.html
-#       Currently not properly utilized, this will eventually be utilized by write-log
+$freecad_exe_installers = @(
+  [PSCustomObject]@{
+    Name      = "TrueView"
+    Path      = "$server\DWGTrueView\Setup.exe"
+    Args      = "--silent"
+    ValidExitCodes = @(0, 3010)
+  }
+  [PSCustomObject]@{
+    Name      = "CreoView"
+    Path      = "$server\CreoView\CreoView_64.exe"
+    Args      = "/v /qb"
+    ValidExitCodes = @(0, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "VC-Redistx64"
+    Path      = "$server\CreoView\prerequisite\vc_redist.x64.exe"
+    Args      = "/install /passive /quiet /norestart"
+    ValidExitCodes = @(0, 3010)
+  }
+)
+
+$network_shares = @(
+  [PSCustomObject]@{
+    Letter    = "Y"
+    Path      = "\\kim-fs1\Taicang"
+    Group     = "Singer"
+  },
+  [PSCustomObject]@{
+    Letter    = "Z"
+    Path      = "\\Kim-fs1\Surrey"
+    Group     = "Singer"
+  },
+    [PSCustomObject]@{
+    Letter    = "W"
+    Path      = "\\kim-fs1\Public"
+    Group     = "all"
+  },
+  [PSCustomObject]@{
+    Letter    = "S"
+    Path      = "\\kim-fs1\Departmentals"
+    Group     = "all"
+  }
+
+  # [PSCustomObject]@{
+  #   Letter    = ""
+  #   Path      = ""
+  #   Group     = ""
+  # }
+)
+
+$pin_items = @(
+  [PSCustomObject]@{
+    Path      = "\\kim-fs1\Taicang\Drawings & Parts Lists"
+    Group     = "Singer"
+  },
+  [PSCustomObject]@{
+    Path      = "\\kim-fs1\Surrey\Rebuild Kit Part Lists"
+    Group     = "Singer"
+  },
+  [PSCustomObject]@{
+    Path      = "\\kim-fs1\Surrey\Photos\Singer Piping Images"
+    Group     = "Singer"
+  },
+  [PSCustomObject]@{
+    Path      = "\\cle-fs1\departmentals\CLE-Singer\SINGER 651 IOM MANUALS"
+    Group     = "Singer"
+  },
+  [PSCustomObject]@{
+    Path      = "\\kim-fs1\Surrey\Customer Service and Technical Support\Submittal Information"
+    Group     = "Singer"
+  }
+)
+
 $exitCodeMap = @{
   # Common Success Codes
   0 = @{ Message = "Success"; Severity = "Info" }
@@ -31,6 +204,7 @@ $exitCodeMap = @{
   1602 = @{ Message = "User cancelled installation"; Severity = "Warning" }
   1603 = @{ Message = "Fatal error during installation"; Severity = "Error" }
   1618 = @{ Message = "Another installation already in progress"; Severity = "Error" }
+  1619 = @{ Message = "Could not open installer package"; Severity = "Error"}
   1620 = @{ Message = "Invalid command line argument"; Severity = "Error" }
   1638 = @{ Message = "Incompatible version already installed"; Severity = "Error" }
 

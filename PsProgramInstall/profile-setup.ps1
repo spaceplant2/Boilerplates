@@ -1,13 +1,16 @@
 ###   build environment and launch program installers
 #       This is intended to be genericised for public consumption
+#       Copy of program-install.ps1, for building standardized profiles. Do NOT run as administrator
+#
 
 function Select-ProgramGroups {
   <#
   .SYNOPSIS
-    Select the desired groups of programs to install
+    Select the desired groups of programs to install, this version for domain joining only
 
   .DESCRIPTION
-    This function will walk through a list of selections to guide program installation. If no parameters are set, the questionnaire will engage.
+    This function will walk through a list of selections to guide program installation. If no parameters are set, the questionnaire will engage. 
+    This is for building standardized profiles. Run from profile to be configured, and do NOT run as administrator.
 
   .PARAMETER Domain
     Set this parameter domain joining is needed
@@ -38,22 +41,23 @@ function Select-ProgramGroups {
   #>
   [CmdletBinding(SupportsShouldProcess = $true)]
   param(
-    [string]$Domain,
-    [string]$Rename,
-    [string]$Power,
-    [string]$Programs,
-    [String]$FreeCAD,
-    [string]$CAD,
-    [string]$Cleanup,
-    [string]$FixProfile,
-    [Switch]$Defaults
+    [string]$Domain     = "n",
+    [string]$Rename     = "n",
+    [string]$Power      = "n",
+    [string]$Programs   = "n",
+    [String]$FreeCAD    = "",
+    [string]$CAD        = "n",
+    [string]$FixProfile = "y",
+    [string]$Cleanup    = "n",
+    [Switch]$Defaults   = $false
   )
-  
+
+
   begin {
   # questionnaire lives here
     if ($Defaults){
       Write-Host "parameter defaults = $Defaults"
-      $Power, $Programs, $Cleanup = $true
+      $Power, $Programs, $Cleanup = "y"
     } else {
       while ((-not $Domain) -or (($Domain -ne "y") -and ($Domain -ne "n"))) {
         $Domain = Read-Host -Prompt "Join computer to domain (y|n)? "
