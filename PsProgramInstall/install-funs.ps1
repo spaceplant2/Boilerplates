@@ -1293,7 +1293,7 @@ function Add-QuickAccess {
   process {
     foreach ($item in $List){
       $path1 = Split-Path -Path $item.path -Leaf
-      if ($Action -eq "PinToHome")
+      if ($Action -eq "PinToHome") {
         if ($path1 -in $CurrentPins) {
           Write-Log "$($item.path) is already Pinned to QuickAccess, skipping"
         }

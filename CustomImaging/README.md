@@ -13,7 +13,8 @@ DISM lives in the system folder of windows installs
 Deployment and Imaging Tools Environment
 
 ## Customized Image Work Flow
-- acquire ISO image from microsoft
+This is generally used to create an image with pre-installed programs. Security programs seem to not work well.
+- acquire ISO image from Microsoft
 - install on physical or virtual machine
 - install required programs
 - *clean all contents from C:\Windows\Panther*
@@ -47,6 +48,8 @@ dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
 ```
 
 Copy your unattend.xml file to `C:\mount\Windows\Panther`
+
+Autorun script lives at `C:\mount\boot\Windows\System32\startnet.cmd`. This can be useful for things like running Dell Commmand to set firmware settings
 
 Clean up and image size reduction.
 ```
