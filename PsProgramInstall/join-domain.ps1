@@ -47,7 +47,7 @@ function Select-ProgramGroups {
     [string]$CAD        = "n",
     [string]$FixProfile = "n",
     [string]$Cleanup    = "n",
-    [Switch]$Defaults   = "n"
+    [Switch]$Defaults   = $false
   )
   
   begin {
@@ -126,9 +126,9 @@ function Select-ProgramGroups {
 ###   Source all necessary files
 #   load additional files
 . .\global-vars.ps1
-. .\manual-remediations.ps1
+# . .\manual-remediations.ps1
 . .\install-vars.ps1
 . .\install-funs.ps1
 
 ###   Then launch it
-Select-ProgramGroups -Domain -Power
+Select-ProgramGroups -Domain y -Power y

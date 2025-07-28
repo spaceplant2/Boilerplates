@@ -22,7 +22,7 @@ This is generally used to create an image with pre-installed programs. Security 
 
 Check for the desired index location.
 ```
-DISM /Get-WinInfo /WimFile:F:\sources\install.wim
+DISM /Get-WimInfo /WimFile:F:\sources\install.wim
 ```
 
 Extract desired index.
@@ -34,7 +34,7 @@ From explorer, mount stock iso and copy all files to preferred working directory
 
 mount image `sources\install.wim`
 ```
- dism /mount-image /imagefile:C:\image.wim /index:1 /mountdir:c:\mount
+ Dism /mount-image /imagefile:C:\image.wim /index:1 /mountdir:c:\mount
 ```
 
 add Windows updates
@@ -44,17 +44,15 @@ Dism /Image:C:\mount\windows /Add-Package /PackagePath=windows10.0-kb4456655-x64
 
 inject drivers
 ```
-dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
+Dism /Image:C:\test\offline /Add-Driver /Driver:c:\drivers /Recurse
 ```
 
 Copy your unattend.xml file to `C:\mount\Windows\Panther`
 
-Autorun script lives at `C:\mount\boot\Windows\System32\startnet.cmd`. This can be useful for things like running Dell Commmand to set firmware settings
-
 Clean up and image size reduction.
 ```
 Dism /Image:C:\mount /cleanup-image /StartComponentCleanup /ResetBase
-DISM.exe /Image:C:\mount /Optimize-Image /Boot
+DISM /Image:C:\mount /Optimize-Image /Boot
 ```
 
 Then unmount the image and export it to a new file
