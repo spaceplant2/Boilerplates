@@ -127,16 +127,16 @@ $freecad_exe_installers = @(
     Path      = "$server\DWGTrueView\Setup.exe"
     Args      = "--silent"
     ValidExitCodes = @(0, 3010)
-  }
+  },
   [PSCustomObject]@{
     Name      = "CreoView"
-    Path      = "$server\CreoView\CreoView_64.exe"
+    Path      = "$server\CreoView\CreoView_Express-12.0.0-x86e_win64.exe"
     Args      = "/v /qb"
     ValidExitCodes = @(0, 3010)
   },
   [PSCustomObject]@{
     Name      = "VC-Redistx64"
-    Path      = "$server\CreoView\prerequisite\vc_redist.x64.exe"
+    Path      = "$server\Microsoft\VC_redist.x64.exe"
     Args      = "/install /passive /quiet /norestart"
     ValidExitCodes = @(0, 3010)
   }

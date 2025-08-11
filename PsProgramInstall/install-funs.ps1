@@ -57,18 +57,18 @@ function Write-Log {
     # Set default log path if not specified
     if (-not $LogPath) {
       $LogPath = if ($LogPathPreset) {$LogPathPreset} else {"$env:TEMP"}
-      # Write-Host "Setting var LogPath to $LogPath" -ForegroundColor Blue
+      Write-Verbose "Setting var LogPath to $LogPath"
     }
     # Create log directory if it doesn't exist
     $logDir = Split-Path -Path $LogPath -Parent
     if (-not (Test-Path -Path $logDir)) {
-      # Write-Host "Creating log directory at $logDir" -ForegroundColor Blue
+      Write-Verbose "Creating log directory at $logDir"
       New-Item -ItemType "Directory" -Path $logDir -Force | Out-Null
     }
     # Create log file
     $logFile = "$(Get-Date -Format 'yyyyMMdd')_$($env:COMPUTERNAME).log"
     if (-not (Test-Path -Path "$LogPath\$logFile" -PathType Leaf)) {
-      # Write-Host "Creating Log file $logFile" -ForegroundColor Blue
+      Write-Verbose "Creating Log file $logFile"
       New-Item -ItemType "File" -Path "$LogPath\$logFile" -Force | Out-Null
     }
   }
@@ -84,7 +84,7 @@ function Write-Log {
     }
     # Write to log file
     try {
-      # Write-Host "Adding message to log"  -ForegroundColor Blue
+      Write-Verbose "Adding message to log"
       Add-Content -Path "$LogPath\$logFile" -Value $logMessage -Encoding utf8 -ErrorAction Stop
     }
     catch {
@@ -198,9 +198,6 @@ function Join-Domain {
 
   end {
     Write-Log "=== Domain Join Process Completed, sending restart signal ===" -LogPath $LogPath
-    # if ((-not $failError) -or ($failError -eq "")) {
-    #   shutdown -r -t 0
-    # }
   }
 }
 
@@ -525,9 +522,9 @@ function Install-EXE {
       Write-Log "Command: `"$($installer.Path)`" $($installer.Args)" -NoConsoleOut
       
       try {
-        if ( $installers.Args -ne "" ) {
+        if ( $installer.Args -ne "" ) {
           $process = Start-Process -FilePath $installer.Path -ArgumentList $installer.Args -NoNewWindow -PassThru
-        }elseif ((! $installers.Args ) -or ( $installers.Args -eq "" )) {
+        }elseif ((! $installer.Args ) -or ( $installer.Args -eq "" )) {
           $process = Start-Process -FilePath $installer.Path -NoNewWindow -PassThru
         }
         $process | Wait-Process -Timeout 300 -ErrorAction Stop -ErrorVariable timedOut

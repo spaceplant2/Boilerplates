@@ -84,6 +84,7 @@ function Select-ProgramGroups {
 
   process {
 #  iterate through the choices and launch the appropriate cmdlets
+    Write-Log "Power is $Power `nPrograms is $Programs `nFreeCAD is $FreeCAD `nCAD is $CAD `nCleanup is $Cleanup `nFixProfile is $FixProfile `nDefaults is $Defaults `n" 
     if ( $domain -eq "y" ){
       Join-Domain
     }
