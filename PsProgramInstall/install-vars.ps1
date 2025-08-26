@@ -41,7 +41,7 @@ $msi_installers = @(
     Name      = "GlobalProtect"
     Action    = "/I"
     Path      = "$server\PaloAlto\GlobalProtect64.msi"
-    Args      = "/qb PORTAL=connect.muellercompany.com"
+    Args      = "PORTAL=connect.muellercompany.com /qb"
   },
   [PSCustomObject]@{
     Name      = "Zoom Plugin"
