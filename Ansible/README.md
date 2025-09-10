@@ -2,6 +2,10 @@
 
 Ansible automates configuration and setup of pretty much anything you could want. AN example of some easy tasks would be running updates, installing patches, setting programs configurations, and installing software. I have several examples of playbooks that have been genericized and sterilized. You will need to modify the playbooks and accompanying config files for your environment.
 
+## Certificate request and install
+
+Using acme.sh to request a certificate and then deploy it to endpoints. Source location is in the playbook, but destination is in `group_vars` so that a single playbook can handle multiple configurations. 
+
 ## Docker :new:
 
 Homogenize a docker stack over multiple hosts. This relies on ansible groups being set correctly as well as docker profiles being added to compose files. Creates a per-host `.env` file that docker looks at when running compose commands. This allows a single configuration to run different containers on different hosts.
@@ -24,4 +28,4 @@ There are so many things that can go wrong while rotating SSH keys that I decide
 
 Install the Wazuh XDR endpoint on Debian based devices. Of course you will want to have a Wazuh server running first- see [my Security Stack repo](https://github.com/spaceplant2/SecurityStack) for an explanation of what this is and why you might want it. There is even a task to install docker monitoring modifications.
 
-[wazuh playbook](wazuh-debian.yml) - lots of modifications needes
+[wazuh playbook](wazuh-debian.yml) - lots of modifications needed
