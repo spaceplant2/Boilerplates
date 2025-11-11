@@ -23,3 +23,6 @@ run the python script:
 `python exporter-data-parser.py`
 `python3 exporter-data-parser.py`
 
+# Further
+
+Currently, I do not plan to develop this script any further as it handles what I need in the environment that I have built. With that in mind, my environment is not necessarily yours, so if you find this useful but have a specific change or addition that would make your life better please let me know! 
