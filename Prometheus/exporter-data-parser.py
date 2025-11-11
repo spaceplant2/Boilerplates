@@ -137,13 +137,26 @@ def main():
     print(f"Fetching metrics from {url}...")
     
     metrics_text = parse_metrics(url)
-    filename = get_filename(url)
     categories = categorize_metrics(metrics_text)
-    markdown = generate_markdown(categories)
+    
+    # Output format selection (currently only markdown supported)
+    output_format = "markdown"
+    print(f"Output format: {output_format} (only format currently supported)")
+    
+    # Generate content based on format
+    if output_format == "markdown":
+        content = generate_markdown(categories)
+        file_extension = "md"
+    else:
+        content = generate_markdown(categories)  # Fallback to markdown
+        file_extension = "md"
+    
+    filename = get_filename(url).replace('.md', f'.{file_extension}')
     
     print("\n" + "="*50)
-    print(markdown)
+    print(content)
     
-    save_to_file(markdown, filename)
+    save_to_file(content, filename)
+
 if __name__ == "__main__":
     main()

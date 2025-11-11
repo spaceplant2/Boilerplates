@@ -26,3 +26,5 @@ run the python script:
 # Further
 
 Currently, I do not plan to develop this script any further as it handles what I need in the environment that I have built. With that in mind, my environment is not necessarily yours, so if you find this useful but have a specific change or addition that would make your life better please let me know! 
+
+In its current state, the basic structure purposefully provides for different file output formats without actually providing the functions for this.
