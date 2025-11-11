@@ -1,0 +1,93 @@
+###   Homogenize docker deployments in a multi-tenant environment
+#       I use docker groups to identify which containers are launched on which hosts.
+
+- hosts: docker
+  become: 'no'
+    
+  vars:
+    git_username: "user"
+    git_email: "email@nothere.com"
+    git_token: "o0ops!tHis_is*NOTA###real>tok3n:-("
+    git_repo: "user/my-repo"
+    docker_path: "/path/to/docker/files"
+
+###   first configure the git environment. If not done, ansible will stop lock up.
+  tasks:
+    - name: Configure global git user
+      community.general.git_config:
+        name: user.name
+        scope: global
+        value: "Ansible"
+  
+    - name: Configure global git email
+      community.general.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_email }}"
+
+    - name: Configure credential helper to store credentials
+      community.general.git_config:
+        name: credential.helper
+        scope: global
+        value: store
+  
+    - name: Create .git-credentials file with PAT authentication
+      copy:
+        content: "https://{{ git_username }}:{{ git_token }}@github.com"
+        dest: ~/.git-credentials
+        mode: '0600'
+  
+    - name: Verify git configuration
+      command: git config --global --list
+      register: git_config
+      changed_when: false
+
+#   get the latest settings
+    - name: pull (update) git repo for docker-manage
+      git:
+        repo: "https://github.com/{{ git_repo }}"
+        dest: /home/edothas/services/manage/
+        update: yes
+        version: main
+        force: yes
+
+#   use ansible groups to create a list of correct docker groups for each host
+    - name: Build compose profiles list
+      set_fact:
+        compose_profiles: "{{ compose_profiles | default([]) + [item.profile] }}"
+      loop:
+        - { group: 'docker-npm', profile: 'docker-npm' }
+        - { group: 'portainer-agent', profile: 'portainer-agent' }
+        - { group: 'portainer-server', profile: 'portainer-server' }
+        - { group: 'docker-monitoring', profile: 'docker-monitoring' }
+      when: inventory_hostname in groups[item.group]
+
+#   write docker groups to .env file
+    - name: Set COMPOSE_PROFILES in env file
+      lineinfile:
+        path: "{{ docker_path }}/.env"
+        line: "COMPOSE_PROFILES={{ compose_profiles | default([]) | join(',') }}"
+        regexp: "^COMPOSE_PROFILES="
+        create: yes
+        owner: edothas
+        group: edothas
+        mode: '0644'
+
+#   bring containers down first. this is necessary if there are any changes made to existing containers.
+    - name: stop all containers
+      community.docker.docker_compose_v2:
+        project_src: /home/edothas/services/manage/
+        # pull: always
+        recreate: always
+        remove_orphans: true
+        state: stopped
+
+#   pull latest images and launch containers according to docker groups assigned.
+    - name: update and start all containers
+      community.docker.docker_compose_v2:
+        project_src: /home/edothas/services/manage/
+        pull: always
+        recreate: always
+        remove_orphans: true
+        state: present
+    

@@ -56,32 +56,36 @@ function Write-Log {
   begin {
     # Set default log path if not specified
     if (-not $LogPath) {
-        $LogPath = "$env:TEMP\PSScriptLog_$(Get-Date -Format 'yyyyMMdd').log"
+      $LogPath = if ($LogPathPreset) {$LogPathPreset} else {"$env:TEMP"}
+      Write-Verbose "Setting var LogPath to $LogPath"
     }
-    
     # Create log directory if it doesn't exist
     $logDir = Split-Path -Path $LogPath -Parent
     if (-not (Test-Path -Path $logDir)) {
-        New-Item -ItemType "Directory" -Path $logDir -Force | Out-Null
+      Write-Verbose "Creating log directory at $logDir"
+      New-Item -ItemType "Directory" -Path $logDir -Force | Out-Null
     }
     # Create log file
-    New-Item -ItemType "File" -Path $LogPath -Force | Out-Null
+    $logFile = "$(Get-Date -Format 'yyyyMMdd')_$($env:COMPUTERNAME).log"
+    if (-not (Test-Path -Path "$LogPath\$logFile" -PathType Leaf)) {
+      Write-Verbose "Creating Log file $logFile"
+      New-Item -ItemType "File" -Path "$LogPath\$logFile" -Force | Out-Null
+    }
   }
   
   process {
     # Create timestamp
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff"
-    
     # Format the message
     if ($Component) {
       $logMessage = "[$timestamp][$Level][$Component] $Message"
     } else {
       $logMessage = "[$timestamp][$Level] $Message"
     }
-    
     # Write to log file
     try {
-      $logMessage | Out-File -FilePath $LogPath -Append -Encoding utf8 -ErrorAction Stop
+      Write-Verbose "Adding message to log"
+      Add-Content -Path "$LogPath\$logFile" -Value $logMessage -Encoding utf8 -ErrorAction Stop
     }
     catch {
       Write-Error "Failed to write to log file: $_"
@@ -90,7 +94,7 @@ function Write-Log {
     # Write to console unless suppressed
     if (-not $NoConsoleOut) {
       switch ($Level) {
-        'Info' { Write-Host $logMessage -ForegroundColor White }
+        'Info' { Write-Host $logMessage -ForegroundColor Green }
         'Warning' { Write-Host $logMessage -ForegroundColor Yellow }
         'Error' { Write-Host $logMessage -ForegroundColor Red }
       }
@@ -134,10 +138,10 @@ function Join-Domain {
     [Parameter(Mandatory = $false)]
     [string]$SiteAbbreviation,
     
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
     [string]$DomainName,
     
-    [Parameter(Mandatory = $true)]
+    [Parameter(Mandatory = $false)]
     [string]$DomainCredential,
     
     [string]$LogPath
@@ -153,6 +157,22 @@ function Join-Domain {
       $SiteAbbreviation = Read-Host "What site abbreviation are you using?"
       Write-Log "User provided site abbreviation: $SiteAbbreviation" -LogPath $LogPath
     }
+    if (-not $PSBoundParameters.ContainsKey('SiteAbbreviation')) {
+      $DomainName = Read-Host "What is the domain we are joining?"
+      Write-Log "User provided domain $DomainName" -LogPath $LogPath
+    }
+    if (-not $PSBoundParameters.ContainsKey('DomainCredential')) {
+      $ok = "n"
+      while ($ok -ne "y"){
+        # $DomainCredential = $DomainName.Split(".")[0]
+        $username += Read-Host "What is the username we will use?"
+        $fullCredential = "$($DomainName.Split(".")[0])\$username"
+        $ok = Read-Host "using $fullCredential, is this correct?"
+        if ($ok -eq "y") {
+          $DomainCredential = $fullCredential
+        }
+      }
+    }
 
     # Generate new name
     $serialNumber = (Get-WmiObject -Class win32_bios).SerialNumber
@@ -165,18 +185,19 @@ function Join-Domain {
   process {
     try {
       if ($PSCmdlet.ShouldProcess("Domain join", "Join computer '$oldName' to domain '$DomainName' as '$newName'")) {
-        Add-Computer -ComputerName $oldName -NewName $newName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force
+        Add-Computer -ComputerName $oldName -NewName $newName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force -ErrorAction Stop
         Write-Log "Successfully joined domain '$DomainName'. Computer will restart with new name '$newName'" -LogPath $LogPath
       }
     }
     catch {
       Write-Log "Failed to join domain: $_" -LogPath $LogPath -Level Error
+      $failError = $_
       throw
     }
   }
 
   end {
-    Write-Log "=== Domain Join Process Completed ===" -LogPath $LogPath
+    Write-Log "=== Domain Join Process Completed, sending restart signal ===" -LogPath $LogPath
   }
 }
 
@@ -501,9 +522,9 @@ function Install-EXE {
       Write-Log "Command: `"$($installer.Path)`" $($installer.Args)" -NoConsoleOut
       
       try {
-        if ( $installers.Args -ne "" ) {
+        if ( $installer.Args -ne "" ) {
           $process = Start-Process -FilePath $installer.Path -ArgumentList $installer.Args -NoNewWindow -PassThru
-        }elseif ((! $installers.Args ) -or ( $installers.Args -eq "" )) {
+        }elseif ((! $installer.Args ) -or ( $installer.Args -eq "" )) {
           $process = Start-Process -FilePath $installer.Path -NoNewWindow -PassThru
         }
         $process | Wait-Process -Timeout 300 -ErrorAction Stop -ErrorVariable timedOut
