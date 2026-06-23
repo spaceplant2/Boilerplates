@@ -2,10 +2,10 @@
 
 $msi_installers = @(
   [PSCustomObject]@{
-    Name      = "Automox"
+    Name      = "Bomgar"
     Action    = "/I"
-    Path      = "$server\Automox\Automox.msi"
-    Args      = "/qb ACCESSKEY=9383bb0e-c93a-4891-b037-157a715faa7b"
+    Path      = "$server\Bomgar\sra-pin-win_x64-j1308g5hx1y6j1fwjj786x5j158wej6xwg5zc90.msi"
+    Args      = "/qb"
   },
   [PSCustomObject]@{
     Name      = "AirTame"
@@ -48,11 +48,23 @@ $msi_installers = @(
     Action    = "/I"
     Path      = "$server\Zoom\ZoomOutlookPluginSetup.msi"
     Args      = "/qb"
+  },
+  [PSCustomObject]@{
+    Name      = "Automox"
+    Action    = "/I"
+    Path      = "$server\Automox\Automox.msi"
+    Args      = "/qb ACCESSKEY=9383bb0e-c93a-4891-b037-157a715faa7b"
   }
 )
 
 # Define our installers
 $exe_installers = @(
+  [PSCustomObject]@{
+    Name      = "Bomgar"
+    Path      = "~/Desktop/bomgar-scc-w0eec30yzz7gewzy5gj78fg5hgfejzx5hizd6fic40hc90.exe"
+    Args      = "/quiet"
+    ValidExitCodes = @(0, 3010)
+  },
   [PSCustomObject]@{
     Name      = "Office"
     Path      = "$server\Microsoft\OfficeSetup.exe"
@@ -65,15 +77,21 @@ $exe_installers = @(
     Args      = "/quiet /norestart"
     ValidExitCodes = @(0, 3010)
   },
-  # [PSCustomObject]@{
-  #   Name       = "Bomgar Client"
-  #   Path       = "~\bomgar-scc-w0eec30d1yhe6i17hxh8wwgd8wh8zz7iezywd7zc40hc90.exe"
-  #   Args       = "/quiet"
-  #   ValidExitCodes = @(0, 3010)
-  # },
+  [PSCustomObject]@{
+    Name      = "DotNet Desktop"
+    Path      = "$server\Dell\dotnet-sdk-8.0.416-win-x64.exe"
+    Args      = "/install /quiet /norestart"
+    ValidExitCodes = @(0, 2, 3010)
+  },
   [PSCustomObject]@{
     Name      = "Dell Update"
-    Path      = "$server\Dell\Dell-Command.exe"
+    Path      = "$server\Dell\Dell-Command-Update-Windows-Universal-Application_C8JXV_WIN64_5.5.0_A00_02.exe"
+    Args      = "/s"
+    ValidExitCodes = @(0, 2, 3010)
+  },
+  [PSCustomObject]@{
+    Name      = "NVidia"
+    Path      = "$server\nvidia\NVIDIA_app_v11.0.5.420.exe"
     Args      = "/s"
     ValidExitCodes = @(0, 2, 3010)
   },

@@ -50,54 +50,67 @@ function Write-Log {
     [switch]$NoConsoleOut,
     
     [Parameter()]
-    [string]$Component = ''
+    [string]$Component = '',
+
+    [Parameter()]
+    [string]$SkipLogging = 'skip'
   )
   
   begin {
-    # Set default log path if not specified
-    if (-not $LogPath) {
-      $LogPath = if ($LogPathPreset) {$LogPathPreset} else {"$env:TEMP"}
-      Write-Verbose "Setting var LogPath to $LogPath"
+    try {
+      # Set default log path if not specified
+      if (-not $LogPath) {
+        $LogPath = if ($LogPathPreset) {$LogPathPreset} else {"$env:TEMP"}
+        Write-Verbose "Setting var LogPath to $LogPath"
+      }
+      # Create log directory if it doesn't exist
+      $logDir = Split-Path -Path $LogPath -Parent
+      if (-not (Test-Path -Path $logDir)) {
+        Write-Verbose "Creating log directory at $logDir"
+        New-Item -ItemType "Directory" -Path $logDir -Force | Out-Null
+      }
+      # Create log file
+      $logFile = "$(Get-Date -Format 'yyyyMMdd')_$($env:COMPUTERNAME).log"
+      if (-not (Test-Path -Path "$LogPath\$logFile" -PathType Leaf)) {
+        Write-Verbose "Creating Log file $logFile"
+        New-Item -ItemType "File" -Path "$LogPath\$logFile" -Force | Out-Null
+      }
     }
-    # Create log directory if it doesn't exist
-    $logDir = Split-Path -Path $LogPath -Parent
-    if (-not (Test-Path -Path $logDir)) {
-      Write-Verbose "Creating log directory at $logDir"
-      New-Item -ItemType "Directory" -Path $logDir -Force | Out-Null
-    }
-    # Create log file
-    $logFile = "$(Get-Date -Format 'yyyyMMdd')_$($env:COMPUTERNAME).log"
-    if (-not (Test-Path -Path "$LogPath\$logFile" -PathType Leaf)) {
-      Write-Verbose "Creating Log file $logFile"
-      New-Item -ItemType "File" -Path "$LogPath\$logFile" -Force | Out-Null
+    catch {
+      Write-Verbose "Unable to create log file, skipping write operation."
+      $skipLogging = 'skip'
     }
   }
   
   process {
-    # Create timestamp
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff"
-    # Format the message
-    if ($Component) {
-      $logMessage = "[$timestamp][$Level][$Component] $Message"
-    } else {
-      $logMessage = "[$timestamp][$Level] $Message"
-    }
-    # Write to log file
-    try {
-      Write-Verbose "Adding message to log"
-      Add-Content -Path "$LogPath\$logFile" -Value $logMessage -Encoding utf8 -ErrorAction Stop
-    }
-    catch {
-      Write-Error "Failed to write to log file: $_"
-    }
-    
-    # Write to console unless suppressed
-    if (-not $NoConsoleOut) {
-      switch ($Level) {
-        'Info' { Write-Host $logMessage -ForegroundColor Green }
-        'Warning' { Write-Host $logMessage -ForegroundColor Yellow }
-        'Error' { Write-Host $logMessage -ForegroundColor Red }
+    if ($skipLogging -ne "skip") {
+      # Create timestamp
+      $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss.fff"
+      # Format the message
+      if ($Component) {
+        $logMessage = "[$timestamp][$Level][$Component] $Message"
+      } else {
+        $logMessage = "[$timestamp][$Level] $Message"
       }
+      # Write to log file
+      try {
+        Write-Verbose "Adding message to log"
+        Add-Content -Path "$LogPath\$logFile" -Value $logMessage -Encoding utf8 -ErrorAction Stop
+      }
+      catch {
+        Write-Error "Failed to write to log file: $_"
+      }
+      
+      # Write to console unless suppressed
+      if (-not $NoConsoleOut) {
+        switch ($Level) {
+          'Info' { Write-Host $logMessage -ForegroundColor Green }
+          'Warning' { Write-Host $logMessage -ForegroundColor Yellow }
+          'Error' { Write-Host $logMessage -ForegroundColor Red }
+        }
+      }
+    } else {
+      Write-Verbose "Unable to create log file, skipping write operation."
     }
   }
   
@@ -185,8 +198,13 @@ function Join-Domain {
   process {
     try {
       if ($PSCmdlet.ShouldProcess("Domain join", "Join computer '$oldName' to domain '$DomainName' as '$newName'")) {
-        Add-Computer -ComputerName $oldName -NewName $newName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force -ErrorAction Stop
-        Write-Log "Successfully joined domain '$DomainName'. Computer will restart with new name '$newName'" -LogPath $LogPath
+        if ('$oldname' -ne '$newname') {
+          Add-Computer -ComputerName $oldName -NewName $newName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force -ErrorAction Stop
+          Write-Log "Successfully joined domain '$DomainName'. Computer will restart with new name '$newName'" -LogPath $LogPath
+        } else {
+          Add-Computer -ComputerName $oldName -DomainName $DomainName -Credential $DomainCredential -Verbose -Restart -Force -ErrorAction Stop
+          Write-Log "Successfully joined domain '$DomainName'. Computer will restart with new name '$newName'" -LogPath $LogPath
+        }
       }
     }
     catch {
@@ -399,7 +417,6 @@ function Install-MSI {
   param(
       [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
       [array]$Installers,
-      
       [string]$LogPath
   )
 
@@ -523,9 +540,9 @@ function Install-EXE {
       
       try {
         if ( $installer.Args -ne "" ) {
-          $process = Start-Process -FilePath $installer.Path -ArgumentList $installer.Args -NoNewWindow -PassThru
+          $process = Start-Process -FilePath $installer.Path -ArgumentList $installer.Args -NoNewWindow -PassThru -Wait
         }elseif ((! $installer.Args ) -or ( $installer.Args -eq "" )) {
-          $process = Start-Process -FilePath $installer.Path -NoNewWindow -PassThru
+          $process = Start-Process -FilePath $installer.Path -NoNewWindow -PassThru -Wait
         }
         $process | Wait-Process -Timeout 300 -ErrorAction Stop -ErrorVariable timedOut
         $exitCode = $process.ExitCode

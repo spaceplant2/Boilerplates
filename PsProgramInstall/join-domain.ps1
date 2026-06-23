@@ -11,7 +11,7 @@ function Select-ProgramGroups {
     This function will walk through a list of selections to guide program installation. If no parameters are set, the questionnaire will engage.
 
   .PARAMETER Domain
-    Set this parameter domain joining is needed
+    Set this parameter if domain joining is needed
 
   .PARAMETER Rename
     Set this parameter if the computer needs to be renamed
