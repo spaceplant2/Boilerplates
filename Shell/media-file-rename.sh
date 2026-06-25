@@ -2,7 +2,7 @@
 ### shell script to rename files and folders
 # /bin/bash
 
-baseDir="/media/unified/local/adults/Videos/movies"
+baseDir="/workspaces/Boilerplates/Shell"
 recurse="n"
 
 for dir in "$baseDir"/*; do
@@ -17,6 +17,7 @@ for dir in "$baseDir"/*; do
       echo "filename0 is $filename0"
       echo "filename is $filename"
       echo "extension is $extension"
+      echo ""
 
 
       newname=$(echo "$filename" | sed 's/[._-]/ /g')
