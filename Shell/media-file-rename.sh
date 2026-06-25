@@ -10,13 +10,15 @@ for dir in "$baseDir"/*; do
   if [[ -d "$dir" ]]; then
     echo "directory is named $dir"
     for path in "$dir"/*; do
-      filename=$(basename -- "$path")
-      ext="${filename##*.}"
+      # filename=$(basename -- "$path")
       filename="${filename%.*}"
-      newname=$(echo "$filename" | sed 's/[._-]/ /g')
+      extension="${filename##*.}"
       echo "path name is $path"
       echo "filename is $filename"
-      echo "ext is $ext"
+      echo "extension is $extension"
+
+
+      newname=$(echo "$filename" | sed 's/[._-]/ /g')
       echo "newname will be $newname"
     done
   fi
