@@ -10,10 +10,11 @@ for dir in "$baseDir"/*; do
   if [[ -d "$dir" ]]; then
     echo "directory is named $dir"
     for path in "$dir"/*; do
-      # filename=$(basename -- "$path")
-      filename="${filename%.*}"
+      filename0=$(basename -- "$path")
+      filename="${filename0%.*}"
       extension="${filename##*.}"
       echo "path name is $path"
+      echo "filename0 is $filename0"
       echo "filename is $filename"
       echo "extension is $extension"
 
